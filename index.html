@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>FIFA World Cup Qatar 2022 - Gestión de Jugadores</title>
+    <meta name="description" content="Sistema de gestión de jugadores del Mundial de Qatar 2022">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 50%, #B22222 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .fifa-logos {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .fifa-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #8B0000, #DC143C);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #8B0000;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #666;
+            font-size: 1.3rem;
+            font-weight: normal;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .card h3 {
+            color: #8B0000;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #DC143C;
+            padding-bottom: 10px;
+        }
+
+        .player-list {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .player-item {
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-left: 4px solid #DC143C;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #8B0000, #DC143C);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #666, #888);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #DC143C;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #DC143C;
+        }
+
+        .operations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .operation-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .operation-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .queries-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .query-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .query-result {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            min-height: 50px;
+        }
+
+        .query-result:empty {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .fifa-logos {
+                justify-content: center;
+                gap: 20px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header fade-in">
+            <div class="fifa-logos">
+                <div class="fifa-logo">FIFA</div>
+                <div>
+                    <h1>FIFA WORLD CUP QATAR 2022</h1>
+                    <h2>Sistema de Gestión de Jugadores</h2>
+                </div>
+                <div class="fifa-logo">⚽</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Lista de Jugadores -->
+            <div class="card fade-in">
+                <h3>📋 Lista de Jugadores</h3>
+                <div class="player-list" id="salida"></div>
+                <div class="controls">
+                    <button class="btn" onclick="listarTodo()">🔄 Mostrar Lista</button>
+                    <button class="btn btn-secondary" onclick="vectoresOcultos()">👁️ Ocultar Lista</button>
+                </div>
+
+                <h4 style="color: #8B0000; margin: 20px 0 15px 0;">⚙️ Operaciones</h4>
+                <div class="operations">
+                    <div class="operation-item">
+                        <label>Ordenar por edad:</label>
+                        <button class="btn" onclick="ascendente()">↑ Ascendente</button>
+                        <button class="btn" onclick="descendente()">↓ Descendente</button>
+                    </div>
+                    
+                    <div class="operation-item">
+                        <label>Ordenar por goles:</label>
+                        <button class="btn" onclick="ascendente2()">↑ Ascendente</button>
+                        <button class="btn" onclick="descendente2()">↓ Descendente</button>
+                    </div>
+                    
+                    <div class="operation-item">
+                        <label>Eliminar jugador por índice:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="nroElem" class="form-control" placeholder="Índice" min="0">
+                            <button class="btn btn-secondary" onclick="eliminarUno()">🗑️</button>
+                        </div>
+                    </div>
+                    
+                    <div class="operation-item">
+                        <label>Eliminar por criterio:</label>
+                        <div class="checkbox-group" style="margin-bottom: 10px;">
+                            <input type="checkbox" name="mundialistas" id="mundialistas">
+                            <label>Última Copa Mundial</label>
+                        </div>
+                        <button class="btn btn-secondary" onclick="eliminarTodos()">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agregar Jugador -->
+            <div class="card fade-in">
+                <h3>➕ Agregar Nuevo Jugador</h3>
+                <div class="form-group">
+                    <label>👤 Nombre:</label>
+                    <input type="text" id="nombre" class="form-control" placeholder="Ingrese el nombre del jugador">
+                </div>
+                
+                <div class="form-group">
+                    <label>🎂 Edad:</label>
+                    <input type="number" id="edad" class="form-control" placeholder="Edad" min="16" max="45">
+                </div>
+                
+                <div class="form-group">
+                    <label>⚽ Goles:</label>
+                    <input type="number" id="goles" class="form-control" placeholder="Cantidad de goles" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label>🏟️ Partidos jugados:</label>
+                    <input type="number" id="partidosquelleva" class="form-control" placeholder="Cantidad de partidos" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" name="UltimoMundial" id="UltimoMundial">
+                        <label>🏆 Es su última Copa Mundial</label>
+                    </div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <button class="btn" onclick="agregar()">➕ Agregar Jugador</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consultas -->
+        <div class="queries-section fade-in">
+            <h3>📊 Consultas y Estadísticas</h3>
+            <div class="query-buttons">
+                <button class="btn" onclick="consulta1()">🥇 Top 3 Goleadores</button>
+                <button class="btn" onclick="consulta2()">🏃‍♂️ Top 3 con Más Partidos</button>
+                <button class="btn" onclick="consulta3()">👴 Jugadores en Última Copa</button>
+                <button class="btn" onclick="consulta4()">🌟 Jugadores en Carrera</button>
+                <button class="btn" onclick="consulta5()">📈 Promedio de Edad</button>
+            </div>
+            
+            <div id="consulta1" class="query-result"></div>
+            <div id="consulta2" class="query-result"></div>
+            <div id="consulta3" class="query-result"></div>
+            <div id="consulta4" class="query-result"></div>
+            <div id="consulta5" class="query-result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales para almacenar datos de jugadores
+        var nombres = [];
+        var edades = [];
+        var goles = [];
+        var partidosquelleva = [];
+        var ultimomundial = [];
+
+        // Inicializar la aplicación
+        function init() {
+            // Datos de ejemplo
+            nombres = ["Lionel Messi", "Cristiano Ronaldo", "Neymar Jr"];
+            edades = [35, 37, 30];
+            goles = [98, 118, 77];
+            partidosquelleva = [172, 196, 124];
+            ultimomundial = [true, true, false];
+            
+            listarTodo();
+        }
+
+        function listarTodo() {
+            let str = "";
+            for (let i = 0; i < nombres.length; i++) {
+                str += `<div class="player-item">
+                    <strong>${i}</strong> - 
+                    <strong>${nombres[i]}</strong> - 
+                    ${edades[i]} años - 
+                    ⚽ ${goles[i]} goles - 
+                    🏟️ ${partidosquelleva[i]} partidos - 
+                    ${ultimomundial[i] ? '🏆 Última Copa' : '🌟 En carrera'}
+                </div>`;
+            }
+            document.getElementById("salida").innerHTML = str;
+        }
+
+        function vectoresOcultos() {
+            document.getElementById("salida").innerHTML = "";
+        }
+
+        function eliminarUno() {
+            const paraEliminar = parseInt(document.getElementById('nroElem').value);
+            if (paraEliminar >= 0 && paraEliminar < nombres.length) {
+                nombres.splice(paraEliminar, 1);
+                edades.splice(paraEliminar, 1);
+                goles.splice(paraEliminar, 1);
+                partidosquelleva.splice(paraEliminar, 1);
+                ultimomundial.splice(paraEliminar, 1);
+                listarTodo();
+                document.getElementById('nroElem').value = '';
+            } else {
+                alert('Índice inválido');
+            }
+        }
+
+        function eliminarTodos() {
+            const bool_eliminar = document.getElementById('mundialistas').checked;
+            for (let i = nombres.length - 1; i >= 0; i--) {
+                if (ultimomundial[i] === bool_eliminar) {
+                    nombres.splice(i, 1);
+                    edades.splice(i, 1);
+                    goles.splice(i, 1);
+                    partidosquelleva.splice(i, 1);
+                    ultimomundial.splice(i, 1);
+                }
+            }
+            listarTodo();
+        }
+
+        function agregar() {
+            const miNombre = document.getElementById('nombre').value.trim();
+            const miEdad = parseInt(document.getElementById('edad').value);
+            const miGoles = parseInt(document.getElementById('goles').value);
+            const miPartidosquelleva = parseInt(document.getElementById('partidosquelleva').value);
+            const miUltimoMundial = document.getElementById('UltimoMundial').checked;
+            
+            if (miNombre && !isNaN(miEdad) && !isNaN(miGoles) && !isNaN(miPartidosquelleva)) {
+                nombres.push(miNombre);
+                edades.push(miEdad);
+                goles.push(miGoles);
+                partidosquelleva.push(miPartidosquelleva);
+                ultimomundial.push(miUltimoMundial);
+                
+                // Limpiar formulario
+                document.getElementById('nombre').value = '';
+                document.getElementById('edad').value = '';
+                document.getElementById('goles').value = '';
+                document.getElementById('partidosquelleva').value = '';
+                document.getElementById('UltimoMundial').checked = false;
+                
+                listarTodo();
+            } else {
+                alert('Por favor, complete todos los campos correctamente');
+            }
+        }
+
+        function intercambiar(i, j) {
+            [nombres[i], nombres[j]] = [nombres[j], nombres[i]];
+            [edades[i], edades[j]] = [edades[j], edades[i]];
+            [goles[i], goles[j]] = [goles[j], goles[i]];
+            [partidosquelleva[i], partidosquelleva[j]] = [partidosquelleva[j], partidosquelleva[i]];
+            [ultimomundial[i], ultimomundial[j]] = [ultimomundial[j], ultimomundial[i]];
+        }
+
+        function ascendente() {
+            let bandera;
+            do {
+                bandera = false;
+                for (let i = 0; i < nombres.length - 1; i++) {
+                    if (edades[i] > edades[i + 1]) {
+                        intercambiar(i, i + 1);
+                        bandera = true;
+                    }
+                }
+            } while (bandera);
+            listarTodo();
+        }
+
+        function descendente() {
+            let bandera;
+            do {
+                bandera = false;
+                for (let i = 0; i < nombres.length - 1; i++) {
+                    if (edades[i] < edades[i + 1]) {
+                        intercambiar(i, i + 1);
+                        bandera = true;
+                    }
+                }
+            } while (bandera);
+            listarTodo();
+        }
+
+        function ascendente2() {
+            let bandera;
+            do {
+                bandera = false;
+                for (let i = 0; i < nombres.length - 1; i++) {
+                    if (goles[i] > goles[i + 1]) {
+                        intercambiar(i, i + 1);
+                        bandera = true;
+                    }
+                }
+            } while (bandera);
+            listarTodo();
+        }
+
+        function descendente2() {
+            let bandera;
+            do {
+                bandera = false;
+                for (let i = 0; i < nombres.length - 1; i++) {
+                    if (goles[i] < goles[i + 1]) {
+                        intercambiar(i, i + 1);
+                        bandera = true;
+                    }
+                }
+            } while (bandera);
+            listarTodo();
+        }
+
+        function consulta1() {
+            // Crear copia de los arrays para no modificar los originales
+            let tempData = [];
+            for (let i = 0; i < nombres.length; i++) {
+                tempData.push({
+                    nombre: nombres[i],
+                    edad: edades[i],
+                    goles: goles[i],
+                    partidos: partidosquelleva[i],
+                    ultimacopa: ultimomundial[i]
+                });
+            }
+            
+            // Ordenar por goles descendente
+            tempData.sort((a, b) => b.goles - a.goles);
+            
+            let str = "<h4>🥇 Top 3 Goleadores:</h4>";
+            for (let i = 0; i < Math.min(3, tempData.length); i++) {
+                const player = tempData[i];
+                str += `<div class="player-item">
+                    ${i + 1}° - <strong>${player.nombre}</strong> - 
+                    ${player.edad} años - ⚽ ${player.goles} goles
+                </div>`;
+            }
+            document.getElementById("consulta1").innerHTML = str;
+        }
+
+        function consulta2() {
+            // Crear copia de los arrays para no modificar los originales
+            let tempData = [];
+            for (let i = 0; i < nombres.length; i++) {
+                tempData.push({
+                    nombre: nombres[i],
+                    edad: edades[i],
+                    goles: goles[i],
+                    partidos: partidosquelleva[i],
+                    ultimacopa: ultimomundial[i]
+                });
+            }
+            
+            // Ordenar por partidos descendente
+            tempData.sort((a, b) => b.partidos - a.partidos);
+            
+            let str = "<h4>🏃‍♂️ Top 3 con Más Partidos:</h4>";
+            for (let i = 0; i < Math.min(3, tempData.length); i++) {
+                const player = tempData[i];
+                str += `<div class="player-item">
+                    ${i + 1}° - <strong>${player.nombre}</strong> - 
+                    🏟️ ${player.partidos} partidos
+                </div>`;
+            }
+            document.getElementById("consulta2").innerHTML = str;
+        }
+
+        function consulta3() {
+            let str = "<h4>👴 Jugadores en su Última Copa:</h4>";
+            let count = 0;
+            for (let i = 0; i < ultimomundial.length; i++) {
+                if (ultimomundial[i] === true) {
+                    str += `<div class="player-item">
+                        <strong>${nombres[i]}</strong> - 🏆 Última Copa Mundial
+                    </div>`;
+                    count++;
+                }
+            }
+            if (count === 0) {
+                str += "<p>No hay jugadores en su última copa.</p>";
+            }
+            document.getElementById('consulta3').innerHTML = str;
+        }
+
+        function consulta4() {
+            let str = "<h4>🌟 Jugadores que Continúan en Carrera:</h4>";
+            let count = 0;
+            for (let i = 0; i < ultimomundial.length; i++) {
+                if (ultimomundial[i] === false) {
+                    str += `<div class="player-item">
+                        <strong>${nombres[i]}</strong> - 🌟 Continúa en carrera
+                    </div>`;
+                    count++;
+                }
+            }
+            if (count === 0) {
+                str += "<p>No hay jugadores que continúen en carrera.</p>";
+            }
+            document.getElementById('consulta4').innerHTML = str;
+        }
+
+        function consulta5() {
+            if (edades.length === 0) {
+                document.getElementById('consulta5').innerHTML = "<h4>📈 No hay datos para calcular el promedio</h4>";
+                return;
+            }
+            
+            let suma = 0;
+            for (let i = 0; i < edades.length; i++) {
+                suma += edades[i];
+            }
+            const promedio = (suma / edades.length).toFixed(1);
+            
+            document.getElementById('consulta5').innerHTML = `
+                <h4>📈 Estadísticas de Edad:</h4>
+                <div class="player-item">
+                    <strong>Promedio de edad:</strong> ${promedio} años<br>
+                    <strong>Total de jugadores:</strong> ${edades.length}
+                </div>`;
+        }
+
+        // Inicializar la aplicación cuando se carga la página
+        window.onload = init;
+    </script>
+</body>
+</html>
